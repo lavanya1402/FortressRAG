@@ -1,0 +1,12 @@
+﻿fastapi
+uvicorn[standard]
+python-dotenv
+pypdf
+faiss-cpu
+langchain
+langchain-community
+langchain-openai
+openai
+tiktoken
+streamlit
+requests

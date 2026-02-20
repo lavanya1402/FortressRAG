@@ -1,0 +1,55 @@
+flowchart TB
+
+subgraph UI[Streamlit UI]
+U1[Tenancy Inputs]
+U2[Upload PDF]
+U3[Ingest Button]
+U4[Ask Question]
+U5[Reranker Toggle and Top K N]
+end
+
+subgraph ING[Ingestion Layer]
+I1[Save PDF to docs folder]
+I2[Extract and Chunk]
+I3[Attach Metadata doc_id version page]
+end
+
+subgraph EMB[Embedding and Storage]
+E1[Create Embeddings]
+E2[Store in FAISS Namespace]
+E3[Vector Index]
+end
+
+subgraph QUERY[Query Pipeline]
+Q1[User Question]
+R1[Similarity Retrieval Top K]
+R2[Optional Reranking Top N]
+CTX[Context Builder]
+G1[LLM Answer Generation]
+OUT[Final Answer with Citations]
+end
+
+U2 --> I1 --> I2 --> I3 --> E1 --> E2 --> E3
+U4 --> Q1 --> R1 --> R2 --> CTX --> G1 --> OUT
+E3 --> R1
+
+style U1 fill:#FFF4E6,stroke:#FFCC99
+style U2 fill:#FFF4E6,stroke:#FFCC99
+style U3 fill:#FFF4E6,stroke:#FFCC99
+style U4 fill:#FFF4E6,stroke:#FFCC99
+style U5 fill:#FFF4E6,stroke:#FFCC99
+
+style I1 fill:#E3F2FD,stroke:#90CAF9
+style I2 fill:#E3F2FD,stroke:#90CAF9
+style I3 fill:#E3F2FD,stroke:#90CAF9
+
+style E1 fill:#F3E5F5,stroke:#CE93D8
+style E2 fill:#F3E5F5,stroke:#CE93D8
+style E3 fill:#F3E5F5,stroke:#CE93D8
+
+style Q1 fill:#E8F5E9,stroke:#A5D6A7
+style R1 fill:#E8F5E9,stroke:#A5D6A7
+style R2 fill:#E8F5E9,stroke:#A5D6A7
+style CTX fill:#E8F5E9,stroke:#A5D6A7
+style G1 fill:#E8F5E9,stroke:#A5D6A7
+style OUT fill:#E8F5E9,stroke:#A5D6A7
