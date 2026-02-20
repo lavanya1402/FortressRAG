@@ -1,154 +1,92 @@
-# 📦 FortressRAG
+# 🏰 FortressRAG
+### Multi-Tenant • Versioned • Governed RAG (FAISS + Optional Reranker)
 
-### 🔐 Enterprise-Grade Hybrid Retrieval-Augmented Generation System
+FortressRAG is an enterprise-oriented Retrieval-Augmented Generation (RAG) system built with **FastAPI**, **FAISS**, and **OpenAI** models.  
+It supports **multi-department / multi-user tenancy isolation**, **document versioning with governance**, **duplicate detection using SHA256**, optional **LLM reranking**, and **latency tracking** across the full RAG pipeline.
 
-FortressRAG is a modular, production-oriented **Hybrid RAG (Retrieval-Augmented Generation)** framework designed for secure, scalable, and enterprise-ready LLM applications.
-
-It combines **Vector Search (FAISS)** with intelligent chunking, optional reranking, and structured generation to deliver reliable responses from PDF documents.
-
----
-
-# 🖼️ Application Screenshots
-
-> Make sure images are inside `/assets` folder
-
-```markdown
-![App Screenshot 1](assets/First_Screenshot%20.png)
-![App Screenshot 2](assets/Second_Screenshot%20.png)
-![App Screenshot 3](assets/Third_Screenshot%20.png)
-```
-
-⚠️ IMPORTANT:
-Tumhare file names me space hai (`First_Screenshot .png`)
-Either:
-
-* Rename files to `First_Screenshot.png` (recommended)
-  OR
-* Use `%20` encoding as shown above.
-
-Recommended rename:
-
-```
-First_Screenshot.png
-Second_Screenshot.png
-Third_Screenshot.png
-```
-
-Then use:
-
-```markdown
-![App Screenshot 1](assets/First_Screenshot.png)
-![App Screenshot 2](assets/Second_Screenshot.png)
-![App Screenshot 3](assets/Third_Screenshot.png)
-```
+This project is designed to behave like a real enterprise knowledge assistant:
+- grounded answers only from documents
+- citations and references
+- version-aware ingestion
+- tenant-aware storage and retrieval
 
 ---
 
-# 🏗️ Architecture Diagram (Mermaid Markdown)
+## ✅ Features
 
-GitHub automatically renders Mermaid if wrapped in ```mermaid block.
+- 🔐 **Tenancy Isolation**
+  - Dept-level shared index (cost-effective)
+  - User-level isolated index (maximum separation)
 
-Copy this:
+- 📄 **Document Governance + Versioning**
+  - Manifest-based lifecycle: **ACTIVE / DEPRECATED**
+  - Duplicate detection via **SHA256 hash**
+  - Tracks active version per document
 
-````markdown
-## 🏗️ System Architecture
+- 🧠 **RAG Pipeline**
+  - FAISS similarity search (Top-K)
+  - Optional reranker (Top-N)
+  - Strict answer generation with citations
+
+- ⏱ **Latency Metrics**
+  - retrieval / rerank / generation / total
+
+- 🧾 **Citations**
+  - Inline citations like **[1], [2]**
+  - References section at the end
+
+---
+
+## 📸 Screenshots
+
+![FortressRAG Screenshot 1](assets/First_Screenshot.png)
+
+![FortressRAG Screenshot 2](assets/Second_Screenshot.png)
+
+![FortressRAG Screenshot 3](assets/Third_Screenshot.png)
+
+---
+
+## 🧱 Architecture
 
 ```mermaid
 flowchart TB
 
-subgraph Ingestion
-A[Upload PDF] --> B[Chunking]
-B --> C[Embedding Generation]
-C --> D[Store in FAISS]
+subgraph API["FastAPI API"]
+H["/health"]
+I["POST /ingest"]
+C["POST /chat"]
 end
 
-subgraph Query
-E[User Question] --> F[Embed Query]
-F --> G[Vector Retrieval]
-G --> H[Reranker Optional]
-H --> I[LLM Generation]
+subgraph ING["Ingestion Layer"]
+P1["Load PDF (pypdf)"]
+P2["Extract text per page"]
+P3["Chunking + Page Tracking"]
+P4["SHA256 hash"]
+R["Build Records (doc_id, version, pages, chunk_id)"]
 end
 
-D --> G
-I --> J[Final Answer]
-````
+subgraph GOV["Governance Layer"]
+M["Manifest JSON (storage/manifests)"]
+DUP["Duplicate detection (active_doc_hash)"]
+VER["Version lifecycle: ACTIVE -> DEPRECATED"]
+end
 
-````
+subgraph STORE["Embedding + Storage"]
+E["OpenAI Embeddings"]
+F["FAISS Index (storage/indexes/<namespace>/current)"]
+end
 
----
+subgraph QP["Query Pipeline"]
+S1["Similarity Search (Top-K)"]
+S2{"use_reranker?"}
+RR["LLM Rerank (Top-N)"]
+CTX["Context Builder + Citations"]
+G["LLM Answer Generation"]
+OUT["Answer + Sources + Latency"]
+end
 
-# 📂 Project Structure
-
-```markdown
-````
-
-FortressRAG/
-│
-├── app/
-│   ├── api.py
-│   ├── config.py
-│   ├── embedding.py
-│   ├── generation.py
-│   ├── ingestion.py
-│   ├── reranker.py
-│   ├── retrieval.py
-│   └── tenancy.py
-│
-├── assets/
-├── docs/
-├── storage/
-│
-├── main.py
-├── streamlit_app.py
-├── rag_test.py
-├── requirements.txt
-└── .gitignore
-
-```
-```
-
----
-
-# 🚀 Features
-
-* Hybrid Retrieval Architecture
-* FAISS Vector Index
-* Intelligent Chunking
-* Modular Enterprise Codebase
-* Streamlit Interface
-* Secure Environment Configuration
-* Multi-Tenant Ready
-
----
-
-# ▶️ Run Application
-
-```bash
-streamlit run streamlit_app.py
-```
-
----
-
-# 🔐 Environment Setup
-
-Create `.env`:
-
-```
-OPENAI_API_KEY=your_api_key_here
-```
-
----
-
-# 🛡️ Design Philosophy
-
-FortressRAG is built for:
-
-* Production scalability
-* Modular extension
-* Secure deployment
-* Enterprise-grade AI systems
-
----
-
-
-
+I --> P1 --> P2 --> P3 --> P4 --> R --> M --> E --> F
+C --> S1 --> S2
+S2 -->|Yes| RR --> CTX --> G --> OUT
+S2 -->|No| CTX --> G --> OUT
