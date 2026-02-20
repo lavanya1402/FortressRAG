@@ -39,12 +39,9 @@ This project is designed to behave like a real enterprise knowledge assistant:
 
 ## 📸 Screenshots
 
-![FortressRAG Screenshot 1](assets/First_Screenshot.png)
-
-![FortressRAG Screenshot 2](assets/Second_Screenshot.png)
-
-![FortressRAG Screenshot 3](assets/Third_Screenshot.png)
-
+![FortressRAG Screenshot 1](./assets/First_Screenshot.png)
+![FortressRAG Screenshot 2](./assets/Second_Screenshot.png)
+![FortressRAG Screenshot 3](./assets/Third_Screenshot.png)
 ---
 
 ## 🧱 Architecture
