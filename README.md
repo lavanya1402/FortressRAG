@@ -1,4 +1,4 @@
-# 🏰 FortressRAG
+# 🏰 FortressRAG 
 ### Multi-Tenant • Versioned • Governed RAG (FAISS + Optional Reranker)
 
 FortressRAG is an enterprise-oriented Retrieval-Augmented Generation (RAG) system built with **FastAPI**, **FAISS**, and **OpenAI** models.  
