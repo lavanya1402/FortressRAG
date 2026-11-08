@@ -87,3 +87,18 @@ I --> P1 --> P2 --> P3 --> P4 --> R --> M --> E --> F
 C --> S1 --> S2
 S2 -->|Yes| RR --> CTX --> G --> OUT
 S2 -->|No| CTX --> G --> OUT
+
+
+## Run locally
+
+```bash
+python -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+cp .env.example .env               # add your keys
+streamlit run streamlit_app.py      # or: python main.py serve
+```
+
+## License
+
+MIT, see [LICENSE](LICENSE). Built by [Lavanya Srivastava](https://github.com/lavanya1402), Lavanya AI Consultancy.
